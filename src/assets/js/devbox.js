@@ -37,8 +37,17 @@ function restoreHub() {
 
 function soundCheck() {
     myVar = setInterval(playSounds, 7000);
-    var message = '{"type":"hubdebug:hubchime","headers":{"destination":"SERV:' + hubID + ':hub","correlationId":"cc34075d-ef8f-4cd6-9cf0-f6a325dffb9d","isRequest":true},"payload":{"messageType":"hubsounds:PlayTone","attributes":{"tone":"' + soundArray[i] + '","durationSec":5}}}';
-    websocket.send(message);
+    var message = {
+        "type": "hubdebug:hubchime",
+        "headers": {
+            "destination": "SERV:" + hubID + ":hub",
+            "correlationId": "cc34075d-ef8f-4cd6-9cf0-f6a325dffb9d",
+            "isRequest": true
+        },
+        "payload": {"messageType": "hubsounds:PlayTone", "attributes": {"tone": soundArray[i], "durationSec": 5}}
+    };
+
+    websocket.send(JSON.stringify(message));
     document.getElementById("hubStatus").innerHTML = 'Playing ' + soundArray[i] + " on " + hubID + "<br><br>" + '<input class="button" type="button" value="Stop Sound Check" onclick="stopSoundCheck();">';
     i = i + 1;
 }
