@@ -53,15 +53,31 @@ function soundCheck() {
 }
 
 function stopSoundCheck() {
-    var message = '{"type":"hubdebug:hubchime","headers":{"destination":"SERV:' + hubID + ':hub","correlationId":"cc34075d-ef8f-4cd6-9cf0-f6a325dffb9d","isRequest":true},"payload":{"messageType":"hubsounds:PlayTone","attributes":{"tone":"' + soundArray[i] + '","durationSec":5}}}';
-    websocket.send(message);
+    var message = {
+        "type": "hubdebug:hubchime",
+        "headers": {
+            "destination": "SERV:" + hubID + ":hub",
+            "correlationId":"cc34075d-ef8f-4cd6-9cf0-f6a325dffb9d",
+            "isRequest": true
+        },
+        "payload": {"messageType": "hubsounds:PlayTone", "attributes": {"tone": soundArray[i] ,"durationSec":5}}
+    };
+
+    websocket.send(JSON.stringify(message));
     clearTimeout(myVar);
     document.getElementById("hubStatus").innerHTML = 'Sound check stopped';
 }
 
 function setHubLocal() {
-    var message = '{"type":"subalarm:SetProvider","headers":{"isRequest":true,"destination":"SERV:subalarm:' + placeID + '","correlationId":"cbda79aa-d41c-4e9d-9aca-83e2fb8bbf61"},"payload":{"messageType":"subalarm:SetProvider","attributes":{"provider":HUB}}}';
-    websocket.send(message);
+    var message = {"type": "subalarm:SetProvider",
+        "headers": {
+            "isRequest": true,
+            "destination": "SERV:subalarm:" + placeID,
+            "correlationId": "cbda79aa-d41c-4e9d-9aca-83e2fb8bbf61"
+        },
+        "payload": {"messageType": "subalarm:SetProvider", "attributes": {"provider": "HUB"}}
+    };
+    websocket.send(JSON.stringify(message));
     document.getElementById("hubStatus").innerHTML = 'Hub Has Been Set To Local';
 }
 
