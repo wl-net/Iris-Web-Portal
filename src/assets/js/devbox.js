@@ -82,7 +82,6 @@ function setHubLocal() {
 }
 
 function zwaveMap() {
-    email = prompt("Please enter you're email so the server can email the file to you.", "Someone@somewhere.net");
     var message = '{"type":"hubdebug:hubchime","headers":{"destination":"SERV:' + hubID + ':hub","correlationId":"cc34075d-ef8f-4cd6-9cf0-f6a325dffmap","isRequest":true},"payload":{"messageType":"hubzwave:NetworkInformation","attributes":{}}}';
     websocket.send(message);
     document.getElementById("zwaveStatus").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:78px"></i> <P> Building map'
