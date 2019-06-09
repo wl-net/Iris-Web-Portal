@@ -1,3 +1,7 @@
+/**
+ * This page defines the connection to the Arcus server, with some basic utilities to make WebSockets easier.
+ * XXX: this file should not have knowledge of the other pages.
+ */
 var portalVer = "V1.3.4";
 //Do not forget the SQL database too.
 var placeID;
@@ -19,20 +23,18 @@ var wsUri = "wss://localhost:3000/websocket?v=2018.10.2"; // Change this URL to 
 // g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
 // })();
 function init() {
-
-    testWebSocket();
+    openWebSocket();
     document.getElementById("portalVer").innerHTML = portalVer;
     document.getElementById("portalCON").innerHTML = '<i class="fa fa-connectdevelop" style="font-size:35px;color:yellow"></i> <br> Connecting';
-    if (window.location.href.indexOf("index.html") > -1) {
-    }
 }
 
 function checkUpdate() {
     window.location.reload(true);
 }
 
-function testWebSocket() {
+function openWebSocket() {
     websocket = new WebSocket(wsUri);
+
     websocket.onopen = function (evt) {
         onOpen(evt)
     };
@@ -40,10 +42,6 @@ function testWebSocket() {
         onClose(evt);
     };
     websocket.onmessage = function (evt) {
-
-        console.log("connecter working data");
-        // $(document).ready(function () {
-        console.log("Doc is ready");
         if (window.location.href.indexOf("index.html") > -1) {
             onMessage(evt);
             OnMfindFav(evt);
@@ -150,7 +148,7 @@ function testWebSocket() {
             OnMevent(evt);
             OnMlistcamSettings(evt);
             homepage = "false"
-        } else if (window.location.href.indexOf("tstatsettings.php") > -1) {
+        } else if (window.location.href.indexOf("tstatsettings.html") > -1) {
             onMessage(evt);
             OnMevent(evt);
             OnMlistTstatSettings(evt);
@@ -195,8 +193,6 @@ function testWebSocket() {
             // placeID = placeIDG;
             homepage = "true";
         }
-        // });
-
     };
     websocket.onerror = function (evt) {
         onError(evt)
@@ -205,7 +201,6 @@ function testWebSocket() {
 
 function onOpen(evt) {
     document.getElementById("portalCON").innerHTML = '<i class="fa fa-connectdevelop" style="font-size:35px;color:green"></i> <br> Connected';
-
 }
 
 function onClose(evt) {
@@ -217,7 +212,6 @@ function onError(evt) {
 }
 
 function onMessage(evt) {
-    console.log("On MEssage connect working data");
     if (window.location.href.indexOf("eventlog.html") > -1) {
         eventlog(evt.data);
     }
@@ -242,7 +236,6 @@ function onMessage(evt) {
                     personID = message[i].replace('"personId":"', '').replace('placeId', "").replace('"', "").replace('{', "").replace(':', "").replace('"', "").replace('"', "").replace('"', "");
                     // var message = '{"type":"place:ListDashboardEntries","headers":{"destination":"SERV:place:' + placeID + '","correlationId":"c6c54d80-2f5c-4d5b-adf5-e85bca5d1278","isRequest":true},"payload":{"messageType":"place:ListDashboardEntries","attributes":{"limit":50}}}';
                     var message = '{"type":"sess:Tag","headers":{"destination":"SERV:sess:","correlationId":"3569d7c0-d395-45ed-9438-ed8f5259599d","isRequest":true},"payload":{"messageType":"sess:Tag","attributes":{"name":"history.filter.day.yesterday","context":{"person.id":"' + personID + '","place.id":"' + placeID + '"}}}}';
-                    console.log(message);
                     websocket.send(message);
                     var message = '{"type":"place:ListHistoryEntries","headers":{"destination":"SERV:place:' + placeID + '","correlationId":"2bf5a5e8-62d6-441e-b890-26151e2d72d9","isRequest":true},"payload":{"messageType":"place:ListHistoryEntries","attributes":{"limit":1000}}}';
                     websocket.send(message);
@@ -308,7 +301,7 @@ function onMessage(evt) {
                     websocket.send(message);
                     // var message = '{"type":"base:GetAttributes","headers":{"destination":"DRIV:dev:'+ camID +'","correlationId":"cc34075d-ef8f-4cd6-9cf0-f6a325dffb9d","isRequest":true},"payload":{"messageType":"base:GetAttributes","attributes":{}}}';
 
-                } else if (window.location.href.indexOf("tstatsettings.php") > -1) {
+                } else if (window.location.href.indexOf("tstatsettings.html") > -1) {
                     console.log("Found page Camera Settings");
                     var message = '{"type":"sess:SetActivePlace","headers":{"destination":"SERV:sess:","correlationId":"78f7d29a-222e-4976-9d2b-d1f553cf8881","isRequest":true},"payload":{"messageType":"sess:SetActivePlace","attributes":{"placeId":"' + placeID + '"}}}';
                     websocket.send(message);
@@ -465,7 +458,12 @@ function onMessage(evt) {
     }
 }
 
+// XXX: remove old API
 function remember(index) {
+	changePlace(index);
+}
+
+function changePlace(index) {
     ListDevices();
     if (localStorage != null) {
         localStorage["places"] = index;

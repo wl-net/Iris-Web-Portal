@@ -199,7 +199,7 @@ function listthermostat(devices){
 						devFav = '<div id="FAV' + devID + '">' + '<i onclick="addtofav(' + devIDlist.length + ')"class="fa fa-heart-o" style="font-size:24px"></i>' + '</div>';
 						}
 						var devInfoLink =  devID + "'";
-						var devSettingsLink = "'tstatsettings.php?tStatID=" + devInfoLink + '"';
+						var devSettingsLink = "'tstatsettings.html?tStatID=" + devInfoLink + '"';
 						devInfoLink = "'device.html?devid=" + devInfoLink + '"';
 						
 					HTML = HTML + '<div class="value"  id=' + devID + ' data-site="' + devName + '"><div>' + devName 
